@@ -1,1 +1,0 @@
-/project/tsmc65/users/schiffe/ws/DVD/hw6/inputs/lp_riscv_top.sdc
