@@ -1,57 +1,53 @@
-# HW-6 SoC Implementation - Stage 3
+# RISC-V SoC Physical Design (RTL2GDS)
 
-## Overview
+This repository documents the complete Physical Design (PnR) flow of a Low-Power RISC-V SoC core, implemented using **Cadence Innovus** in **TSMC 65nm** technology. The project covers the full cycle from synthesized gate-level netlist to a production-ready GDSII layout.
 
-This repository contains the hardware and software artifacts for the Digital VLSI Design HW-6 project, focused on place and route for a RISC-V based System-on-Chip (SoC). It includes IO ring definition, floorplanning, place and route, and optional gate-level simulation and power estimation.
+## 🛠️ Design Flow & Milestones
 
-## Getting Started
+The following sections illustrate the physical implementation process, showcasing the evolution from a blank floorplan to a fully routed and optimized silicon layout.
 
-Before cloning the repository, run:
+### 1. Floorplanning & Macro Placement
+The process began with defining the die area and strategically placing the hard macros (SRAM blocks). A relative floorplan approach was used to optimize area and ensure efficient communication between the memory units and the core logic.
 
-```bash
-tsmc65 && cd DVD
-```
+![Hard Macro Placement](./pictures/hard_macros_srams.png)
 
-Then clone the repository:
+### 2. Power Planning (VDD/GND Railways)
+Implementation of the robust Power Distribution Network (PDN). This included creating core rings and vertical/horizontal power stripes (M2-M5) to ensure stable voltage supply across the chip and minimize IR drop.
 
-```bash
-git clone https://github.com/DVD2026/hw6.git
-cd hw6
-```
+![Power Grid Design](./pictures/VDD_GND_railways.png)
 
-Create your working branch:
+### 3. Standard Cell Placement
+Automated placement of thousands of standard cells. This stage involved congestion analysis and initial timing-driven placement to minimize wirelength and meet performance targets.
 
-```bash
-git checkout v1.0 -b YOUR_ID
-```
+![Placement Stage](./pictures/Placement.png)
 
-Run setup to prepare the environment:
+### 4. Clock Tree Synthesis (CTS)
+Building the clock distribution network. Using **CCopt**, a balanced clock tree was synthesized to minimize skew and insertion delay, ensuring synchronized operation across all flip-flops in the design.
 
-```bash
-./setup.sh
-```
+![Clock Tree Synthesis](./pictures/CTS.png)
 
-## What to Apply
+### 5. Detailed Routing
+The final interconnect stage where all logical nets are physically routed using multiple metal layers. The routing was timing and SI (Signal Integrity) driven to prevent crosstalk and meet setup/hold requirements.
 
-- Define the chip floorplan width and height using your 9-digit ID parameters as given in the documentation.
-- Arrange IO pads and SRAM instances optimally in the floorplan.
-- Use Innovus scripts to run floorplan, place and route, and clock tree synthesis.
-- Check and fix all DRC and hold violations.
-- Commit and push:
-  - Your final post-layout design (export folder)
-  - Critical path timing reports (reports folder)
-  - DRC and connectivity reports (reports folder)
-  - A file `reports/mypnr.txt` containing:
-    1. Your ID number
-    2. Floorplan width x height
-    3. Smallest clock period met
-    4. Worst hold slack
-    5. Startpoint and endpoint of worst hold path
+![Detailed Routing](./pictures/route.png)
 
-## Full Instructions
+## 📊 Signoff & Results
 
-For detailed instructions, refer to:
+The design underwent rigorous signoff checks to ensure manufacturing readiness.
 
-```
-docs/HW 6 - SoC Implementation - Stage 3 - 2025-26.pdf
-```
+### Timing Closure
+Successful timing closure was achieved at the post-route stage. The final reports show a positive slack for both Setup and Hold, ensuring the design operates reliably at the target frequency.
+
+![Hold Timing Report](./pictures/hold_timing_report.png)
+
+### Physical Verification & Statistics
+The final layout passed all physical verification checks with **Zero DRC and Connectivity violations**. The block statistics confirm efficient resource utilization and density.
+
+![PnR Statistics](./pictures/PnR_stats.png)
+
+---
+**Key Results Summary:**
+- **Technology:** TSMC 65nm
+- **Tools:** Cadence Innovus (Common UI)
+- **Physical Violations:** 0 (DRC/LVS Clean)
+- **Timing Status:** Fully Closed (Setup & Hold)
